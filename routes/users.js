@@ -1,165 +1,102 @@
-const express = require('express');
-const privateMiddleware = require('../middlewares/private');
-const userController = require('../controllers/usersController');
+const express = require("express");
 const router = express.Router();
+const userService = require("../services/users_services");
 
-/**
- * @module usersRoutes
- */
+// Route to get all users
+router.get("/", async (req, res) => {
+  try {
+    // Fetch all users using the service layer
+    const users = await userService.getAllUsers();
+    // Send the users data as JSON
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-/**
- * @group Users Routes - Operations related to users
- * 
- * Route to get a user by ID.
- * 
- * @name GetUserById
- * @route {GET} /:id
- * @middleware {checkJWT} privateMiddleware.checkJWT
- * @group Users - Operations about users
- * @param {string} id.path.required - The user's ID
- * @returns {Object} 200 - The user object
- * @returns {Object} 404 - User not found
- * @returns {Object} 500 - Internal Server Error
- * 
- * @example
- * // Usage
- * app.get('/users/:id', privateMiddleware.checkJWT, userController.getById);
- */
-router.get('/:id', privateMiddleware.checkJWT, userController.getById);
+// Route to get a user by ID
+router.get("/:id", async (req, res) => {
+  const id = req.params.id;
 
-/**
- * @group Users Routes - Operations related to users
- * 
- * Route to add a new user.
- * 
- * @name AddUser
- * @route {POST} /
- * @middleware {checkJWT} privateMiddleware.checkJWT
- * @group Users - Operations about users
- * @returns {Object} 200 - An object containing a success message
- * @returns {Object} 400 - Validation error
- * @returns {Object} 500 - Internal Server Error
- * 
- * @example
- * // Usage
- * app.post('/users', privateMiddleware.checkJWT, userController.add);
- */
-router.post('/', privateMiddleware.checkJWT, userController.add);
+  try {
+    // Fetch a specific user by ID using the service layer
+    const user = await userService.getUserById(id);
+    if (user) {
+      // Send the user data as JSON
+      res.status(200).json(user);
+    } else {
+      res.status(404).json("user_not_found");
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-/**
- * @group Users Routes - Operations related to users
- * 
- * Route to render the user creation page.
- * 
- * @name RenderUserCreationPage
- * @route {GET} /user/add
- * @middleware {checkJWT} privateMiddleware.checkJWT
- * @group Users - Operations about users
- * @returns {Object} 200 - An object containing the rendered user creation form
- * @returns {Object} 500 - Internal Server Error
- * 
- * @example
- * // Usage
- * app.get('/users/user/add', privateMiddleware.checkJWT, userController.renderCreationPage);
- */
-router.get('/user/add', privateMiddleware.checkJWT, userController.renderCreationPage);
+// Route to create a new user
+router.post("/add", async (req, res) => {
+  const userData = {
+    name: req.body.name,
+    firstname: req.body.firstname,
+    email: req.body.email,
+    password: req.body.password,
+  };
 
-/**
- * @group Users Routes - Operations related to users
- * 
- * Route to delete a user by ID.
- * 
- * @name DeleteUser
- * @route {DELETE} /:id
- * @middleware {checkJWT} privateMiddleware.checkJWT
- * @group Users - Operations about users
- * @param {string} id.path.required - The user's ID
- * @returns {Object} 200 - An object containing a success message
- * @returns {Object} 404 - User not found
- * @returns {Object} 500 - Internal Server Error
- * 
- * @example
- * // Usage
- * app.delete('/users/:id', privateMiddleware.checkJWT, userController.delete);
- */
-router.delete('/:id', privateMiddleware.checkJWT, userController.delete);
+  try {
+    // Create a new user using the service layer
+    const user = await userService.addUser(userData);
+    // Send the newly created user as JSON with a 201 status code
+    res.status(201).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-/**
- * @group Users Routes - Operations related to users
- * 
- * Route to update a user by ID.
- * 
- * @name UpdateUser
- * @route {PUT} /:id
- * @middleware {checkJWT} privateMiddleware.checkJWT
- * @group Users - Operations about users
- * @param {string} id.path.required - The user's ID
- * @returns {Object} 200 - An object containing a success message
- * @returns {Object} 404 - User not found
- * @returns {Object} 400 - Validation error
- * @returns {Object} 500 - Internal Server Error
- * 
- * @example
- * // Usage
- * app.put('/users/:id', privateMiddleware.checkJWT, userController.update);
- */
-router.put('/:id', privateMiddleware.checkJWT, userController.update);
+// Route to update a user by ID
+router.put("/:id", async (req, res) => {
+  const id = req.params.id;
+  const userData = {
+    name: req.body.name,
+    firstname: req.body.firstname,
+    email: req.body.email,
+    password: req.body.password,
+  };
 
-/**
- * @group Users Routes - Operations related to users
- * 
- * Route to render the edit user page.
- * 
- * @name RenderEditUserPage
- * @route {GET} /:id/edit
- * @middleware {checkJWT} privateMiddleware.checkJWT
- * @group Users - Operations about users
- * @param {string} id.path.required - The user's ID
- * @returns {Object} 200 - An object containing the rendered edit user form 
- * @returns {Object} 404 - User not found
- * @returns {Object} 500 - Internal Server Error
- * 
- * @example
- * // Usage
- * app.get('/users/:id/edit', privateMiddleware.checkJWT, userController.edit);
- */
-router.get('/:id/edit', privateMiddleware.checkJWT, userController.edit);
+  try {
+    // Update the user by ID using the service layer
+    const user = await userService.updateUserById(id, userData);
+    // Send the updated user data as JSON
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-/**
- * @group Users Routes - Operations related to users
- * 
- * Route to authenticate a user.
- * 
- * @name AuthenticateUser
- * @route {POST} /authenticate
- * @group Users - Operations about users
- * @returns {Object} 200 - An object containing the rendered dashboard
- * @returns {Object} 401 - Wrong credentials
- * @returns {Object} 500 - Internal Server Error
- * 
- * @example
- * // Usage
- * app.post('/users/authenticate', userController.authenticate);
- */
-router.post('/authenticate', userController.authenticate);
+// Route to delete a user by ID
+router.delete("/:id", async (req, res) => {
+  const id = req.params.id;
 
-/** 
- * @group Users Routes - Operations related to users
- * 
- * Route to get a list of all users.
- * 
- * @name GetAllUsers
- * @route {GET} /list/all
- * @middleware {checkJWT} privateMiddleware.checkJWT
- * @group Users - Operations about users
- * @returns {Object} 200 - A list of user objects
- * @returns {Object} 404 - No users found
- * @returns {Object} 500 - Internal Server Error
- * 
- * @example
- * // Usage
- * app.get('/list/all', privateMiddleware.checkJWT, userController.getUsersList);
- */
-router.get('/list/all',privateMiddleware.checkJWT, userController.getUsersList )
+  try {
+    // Delete the user by ID using the service layer
+    const result = await userService.deleteUserById(id);
+    // Send the result of the delete operation as JSON
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Route to authenticate a user
+router.post("/authenticate", async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Authenticate the user using the service layer
+    const result = await userService.authenticateUser(email, password);
+    // Send the authentication result as JSON
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;

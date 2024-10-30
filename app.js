@@ -1,35 +1,51 @@
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const cors = require('cors');
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const cors = require("cors");
+const path = require("path");
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const mongodb = require('./db/mongo');
+// Import routes and controllers
+const indexRouter = require("./routes/index_routes");
+const mongodb = require("./db/mongo");
 
-mongodb.initClientDbConnection();
+// Initialize MongoDB connection
+mongodb.initClienDbConnection();
 
 const app = express();
 
-app.use(cors({
-    exposedHeaders: ['Authorization'],
-    origin: '*'
-}));
-app.use(logger('dev'));
+// Middleware setup
+app.use(
+  cors({
+    exposedHeaders: ["Authorization"],
+    origin: "*",
+  })
+);
+
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// Set up the view engine and views directory
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
 
-app.use(function(req, res, next) {
-    res.status(404).jason({name: 'API', version: '1.0', status: 404, message: 'not_found'});
+// Serve JSDoc documentation
+const docsPath = path.join(__dirname, 'docs'); 
+app.use('/docs', express.static(docsPath));
+
+// Principal route
+app.use("/", indexRouter);
+
+// 404 handler for unmatched routess
+app.use((req, res) => {
+  res.status(404).json({
+    name: "API",
+    version: "1.0",
+    status: 404,
+    message: "not_found",
+  });
 });
-
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'ejs')
 
 module.exports = app;
