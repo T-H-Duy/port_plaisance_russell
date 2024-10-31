@@ -1,11 +1,6 @@
 const Reservation = require("../models/reservation_model");
 
-/**
- * Get all reservations for a specific catway by its ID.
- *
- * @param {string} catwayId - The ID of the catway.
- * @returns {Promise<Array>} - A promise that resolves to an array of reservations.
- */
+
 exports.getResByCatwayId = async (catwayId) => {
   try {
     const reservations = await Reservation.find({ catwayId });
@@ -16,13 +11,6 @@ exports.getResByCatwayId = async (catwayId) => {
   }
 };
 
-/**
- * Get a single reservation by its ID and catway ID.
- *
- * @param {string} catwayId - The ID of the catway.
- * @param {string} reservationId - The ID of the reservation.
- * @returns {Promise<Object|null>} - A promise that resolves to the reservation or null if not found.
- */
 exports.getResByCatwayAndId = async (catwayId, reservationId) => {
   try {
     const reservation = await Reservation.findOne({
@@ -36,16 +24,6 @@ exports.getResByCatwayAndId = async (catwayId, reservationId) => {
   }
 };
 
-/**
- * Create a new reservation for a specific catway.
- *
- * @param {string} catwayId - The ID of the catway.
- * @param {string} clientName - The name of the client.
- * @param {Date} checking - The check-in date.
- * @param {Date} checkout - The check-out date.
- * @param {string} boatName - The name of the client's boat.
- * @returns {Promise<Object>} - A promise that resolves to the newly created reservation.
- */
 exports.createReservation = async (
   catwayId,
   clientName,
@@ -69,13 +47,6 @@ exports.createReservation = async (
   }
 };
 
-/**
- * Delete a reservation by its ID and catway ID.
- *
- * @param {string} catwayId - The ID of the catway.
- * @param {string} reservationId - The ID of the reservation.
- * @returns {Promise<Object>} - A promise that resolves to the result of the deletion.
- */
 exports.deleteResByCatwayAndId = async (catwayId, reservationId) => {
   try {
     const result = await Reservation.deleteOne({

@@ -3,11 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = process.env;
 
-/**
- * Get all users, excluding their passwords.
- *
- * @returns {Promise<Array>} - A promise that resolves to an array of user objects.
- */
+
 exports.getAllUsers = async () => {
   try {
     return await User.find({}, "-password");
@@ -17,12 +13,6 @@ exports.getAllUsers = async () => {
   }
 };
 
-/**
- * Get a user by their ID.
- *
- * @param {string} id - The ID of the user.
- * @returns {Promise<Object|null>} - A promise that resolves to the user object or null if not found.
- */
 exports.getUserById = async (id) => {
   try {
     return await User.findById(id);
@@ -32,12 +22,6 @@ exports.getUserById = async (id) => {
   }
 };
 
-/**
- * Create a new user.
- *
- * @param {Object} userData - The data for the new user.
- * @returns {Promise<Object>} - A promise that resolves to the created user object.
- */
 exports.addUser = async (userData) => {
   try {
     return await User.create(userData);
@@ -47,13 +31,6 @@ exports.addUser = async (userData) => {
   }
 };
 
-/**
- * Update a user by their ID.
- *
- * @param {string} id - The ID of the user.
- * @param {Object} userData - The updated data for the user.
- * @returns {Promise<Object>} - A promise that resolves to the updated user object.
- */
 exports.updateUserById = async (id, userData) => {
   try {
     const user = await User.findById(id);
@@ -75,12 +52,6 @@ exports.updateUserById = async (id, userData) => {
   }
 };
 
-/**
- * Delete a user by their ID.
- *
- * @param {string} id - The ID of the user.
- * @returns {Promise<Object>} - A promise that resolves to a message confirming deletion.
- */
 exports.deleteUserById = async (id) => {
   try {
     const user = await User.findById(id);
@@ -95,13 +66,6 @@ exports.deleteUserById = async (id) => {
   }
 };
 
-/**
- * Authenticate a user by their email and password.
- *
- * @param {string} email - The user's email address.
- * @param {string} password - The user's password.
- * @returns {Promise<Object>} - A promise that resolves to an object containing a JWT token.
- */
 exports.authenticateUser = async (email, password) => {
   try {
     const user = await User.findOne({ email }).select(
