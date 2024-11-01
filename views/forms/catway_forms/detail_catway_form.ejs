@@ -1,0 +1,61 @@
+<div>
+    <h2>Catway Detail</h2>
+    <select id="catwaySelector" onchange="fetchCatwayDetails()">
+      <option value="">Select a Catway</option>
+    </select>
+  
+    <div id="catwayDetails"></div>
+  </div>
+  
+  <script>
+    async function fetchCatwayDetails() {
+      const catwayId = document.getElementById("catwaySelector").value;
+      if (!catwayId) return;
+  
+      try {
+        const response = await fetch(`/catways/detail/${catwayId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch Catway details");
+        }
+        const catway = await response.json();
+        displayCatwayDetails(catway);
+      } catch (error) {
+        console.error("Error fetching Catway details:", error.message);
+        alert("Error fetching Catway details: " + error.message);
+      }
+    }
+  
+    function displayCatwayDetails(catway) {
+      const detailsSection = document.getElementById("catwayDetails");
+      detailsSection.innerHTML = `
+        <p><strong>Catway Number:</strong> ${catway.catwayNumber}</p>
+        <p><strong>Catway State:</strong> ${catway.catwayState}</p>
+        <p><strong>Type:</strong> ${catway.type ? "Long" : "Short"}</p>
+        <p><strong>Created At:</strong> ${new Date(catway.createdAt).toLocaleString()}</p>
+        <p><strong>Updated At:</strong> ${new Date(catway.updatedAt).toLocaleString()}</p>
+      `;
+    }
+  
+    async function fetchCatwayOptions() {
+      try {
+        const response = await fetch("/catways/catwayNumbers");
+        if (!response.ok) {
+          throw new Error("Failed to fetch Catway numbers");
+        }
+        const catwayNumbers = await response.json();
+        const selector = document.getElementById("catwaySelector");
+        catwayNumbers.forEach((catway) => {
+          const option = document.createElement("option");
+          option.value = catway._id;
+          option.textContent = catway.catwayNumber;
+          selector.appendChild(option);
+        });
+      } catch (error) {
+        console.error("Error fetching Catway numbers:", error.message);
+        alert("Error fetching Catway numbers: " + error.message);
+      }
+    }
+  
+    fetchCatwayOptions();
+  </script>
+  

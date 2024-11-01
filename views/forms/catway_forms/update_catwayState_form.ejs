@@ -1,0 +1,81 @@
+<div>
+    <h2>Update Catway State</h2>
+    <form id="updateCatwayForm">
+      <label for="updateCatwayId">Select Catway Number:</label>
+      <select id="updateCatwayId" name="updateCatwayId" required>
+        <option value="" disabled selected>Select a Catway</option>
+      </select>
+      <br /><br />
+  
+      <label for="updateCatwayState">New Catway State:</label>
+      <input
+        type="text"
+        id="updateCatwayState"
+        name="updateCatwayState"
+        required
+      />
+      <br /><br />
+  
+      <button type="submit">Update Catway State</button>
+    </form>
+  </div>
+  
+  <script>
+    document
+      .getElementById("updateCatwayForm")
+      .addEventListener("submit", async function (event) {
+        event.preventDefault();
+  
+        const updateCatwayId = document.getElementById("updateCatwayId").value;
+        const updateCatwayState = document
+          .getElementById("updateCatwayState")
+          .value.trim();
+  
+        if (!updateCatwayState) {
+          alert("Catway State cannot be empty");
+          return;
+        }
+  
+        try {
+          const response = await fetch(`/catways/${updateCatwayId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ catwayState: updateCatwayState }),
+          });
+  
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Failed to update Catway State");
+          }
+  
+          const result = await response.json();
+          alert("Catway State updated successfully");
+          fetchCatwayNumbers();
+        } catch (error) {
+          alert("Error updating Catway State: " + error.message);
+        }
+      });
+  
+    async function fetchCatwayNumbers() {
+      try {
+        const response = await fetch("/catways/catwayNumbers");
+        if (!response.ok) throw new Error("Failed to fetch catway numbers");
+  
+        const catways = await response.json();
+        const selectElement = document.getElementById("updateCatwayId");
+        selectElement.innerHTML = '<option value="" disabled selected>Select a Catway</option>';
+  
+        catways.forEach((catway) => {
+          const option = document.createElement("option");
+          option.value = catway._id;
+          option.textContent = catway.catwayNumber;
+          selectElement.appendChild(option);
+        });
+      } catch (error) {
+        alert("Error fetching catway numbers: " + error.message);
+      }
+    }
+  
+    fetchCatwayNumbers();
+  </script>
+  

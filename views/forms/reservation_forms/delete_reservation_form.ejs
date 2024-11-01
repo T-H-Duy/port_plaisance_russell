@@ -1,0 +1,123 @@
+<div>
+    <h2>Delete Reservation</h2>
+    <form id="deleteReservationForm">
+      <label for="catwayIdDelete"
+        >Select a Catway Number to delete reservation (by id):</label
+      >
+      <select id="catwayIdDelete" name="catwayIdDelete" required>
+        <option value="" disabled selected>Select a Catway</option>
+      </select>
+      <br /><br />
+  
+      <label for="reservationId">Select a Reservation:</label><br />
+      <select id="reservationId" name="reservationId" required>
+        <option value="" disabled selected>Select a Reservation</option>
+      </select>
+      <br /><br />
+  
+      <button type="submit">Delete Reservation</button>
+    </form>
+  </div>
+  
+  <script>
+    (async function () {
+      async function populateCatwaysSelect() {
+        try {
+          const response = await fetch("/catways");
+          if (!response.ok) throw new Error("Failed to fetch catways");
+  
+          const catways = await response.json();
+          const catwaySelect = document.getElementById("catwayIdDelete");
+  
+          catwaySelect.innerHTML =
+            '<option value="" disabled selected>Select a Catway</option>';
+  
+          catways.forEach((catway) => {
+            const option = document.createElement("option");
+            option.value = catway._id;
+            option.textContent = catway.catwayNumber;
+            catwaySelect.appendChild(option);
+          });
+  
+          if (catways.length > 0) {
+            await populateReservationsSelect(catways[0]._id);
+          }
+        } catch (error) {
+          console.error("Error fetching catways:", error.message);
+          alert("Error loading catways: " + error.message);
+        }
+      }
+  
+      async function populateReservationsSelect(catwayId) {
+        try {
+          const response = await fetch(`/reservations/${catwayId}/reservations`);
+          if (!response.ok) throw new Error("Failed to fetch reservations");
+  
+          const reservations = await response.json();
+          const reservationSelect = document.getElementById("reservationId");
+  
+          reservationSelect.innerHTML =
+            '<option value="" disabled selected>Select a Reservation</option>';
+  
+          if (reservations.length === 0) {
+            const noReservationsOption = document.createElement("option");
+            noReservationsOption.textContent = "No reservations available";
+            reservationSelect.appendChild(noReservationsOption);
+          } else {
+            reservations.forEach((reservation) => {
+              const option = document.createElement("option");
+              option.value = reservation._id;
+              option.textContent = `ID: ${reservation._id}`;
+              reservationSelect.appendChild(option);
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching reservations:", error.message);
+          alert("Error loading reservations: " + error.message);
+        }
+      }
+  
+      document
+        .getElementById("deleteReservationForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+  
+          const catwayId = document.getElementById("catwayIdDelete").value;
+          const reservationId = document.getElementById("reservationId").value;
+  
+          try {
+            const response = await fetch(
+              `/reservations/${catwayId}/reservations/${reservationId}`,
+              {
+                method: "DELETE",
+              }
+            );
+  
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.error || "Failed to delete reservation");
+            }
+  
+            alert("Reservation successfully deleted");
+            console.log("Reservation deleted");
+  
+            document.getElementById("deleteReservationForm").reset();
+  
+            window.location.reload();
+          } catch (error) {
+            console.error("Error deleting reservation:", error.message);
+            alert("Error deleting reservation: " + error.message);
+          }
+        });
+  
+      document
+        .getElementById("catwayIdDelete")
+        .addEventListener("change", async function (event) {
+          const catwayId = event.target.value;
+          await populateReservationsSelect(catwayId);
+        });
+  
+      await populateCatwaysSelect();
+    })();
+  </script>
+  

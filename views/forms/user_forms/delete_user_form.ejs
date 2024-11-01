@@ -1,0 +1,80 @@
+<div>
+    <h2>Delete User</h2>
+  
+    <form id="deleteUserForm">
+      <label for="deleteUserId">Select the user to delete:</label>
+      <select id="deleteUserId" name="deleteUserId" required>
+      </select>
+      <br /><br />
+  
+      <button type="submit">Delete User</button>
+    </form>
+  </div>
+  
+  <script>
+    async function populateUserSelect() {
+      try {
+        const response = await fetch("/users");
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+  
+        const users = await response.json();
+  
+        const selectElement = document.getElementById("deleteUserId");
+  
+        selectElement.innerHTML = "<option value='' disabled selected>Select a user</option>";
+  
+        users.forEach((user) => {
+          const option = document.createElement("option");
+          option.value = user._id;
+          option.textContent = `${user.name} (${user.email})`;
+          selectElement.appendChild(option);
+        });
+      } catch (error) {
+        console.error("Error retrieving users:", error.message);
+        alert("Error retrieving users");
+      }
+    }
+  
+    document.addEventListener("DOMContentLoaded", populateUserSelect);
+  
+    document
+      .getElementById("deleteUserForm")
+      .addEventListener("submit", async function (event) {
+        event.preventDefault();
+  
+        const userId = document.getElementById("deleteUserId").value;
+  
+        if (!userId) {
+          alert("Please select a user");
+          return;
+        }
+  
+        try {
+          const response = await fetch(`/users/${userId}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+  
+          if (response.ok) {
+            const deletedUser = await response.json();
+            console.log("User deleted:", deletedUser);
+  
+            alert("User deleted successfully!");
+  
+            populateUserSelect();
+          } else {
+            const error = await response.json();
+            throw new Error(error.message || "Error deleting user");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Error deleting user: " + error.message);
+        }
+      });
+  </script>
+  

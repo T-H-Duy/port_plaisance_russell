@@ -1,0 +1,54 @@
+<div>
+    <h2>Create User</h2>
+  
+   <form id="addUserForm">
+      <label for="newName">Name:</label>
+      <input type="text" id="newName" name="name" required />
+      <br /><br />
+  
+      <label for="newEmail">Email:</label>
+      <input type="email" id="newEmail" name="email" required />
+      <br /><br />
+  
+      <label for="newPassword">Password:</label>
+      <input type="password" id="newPassword" name="password" required />
+      <br /><br />
+  
+      <button type="submit">Add User</button>
+    </form>
+  </div>
+  
+  <script>
+    document
+      .getElementById("addUserForm")
+      .addEventListener("submit", async function (event) {
+        event.preventDefault();
+  
+        const name = document.getElementById("newName").value;
+        const email = document.getElementById("newEmail").value;
+        const password = document.getElementById("newPassword").value;
+  
+        try {
+          const response = await fetch("/users/add", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name, email, password }),
+          });
+  
+          if (response.ok) {
+            const newUser = await response.json();
+            console.log("New user added:", newUser);
+            alert("User added successfully!");
+            window.location.reload();
+          } else {
+            throw new Error("Error adding user");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Error adding user");
+        }
+      });
+  </script>
+  
