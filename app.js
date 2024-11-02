@@ -32,8 +32,8 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 // Serve JSDoc documentation
-const docsPath = path.join(__dirname, 'docs'); 
-app.use('/docs', express.static(docsPath));
+const docsPath = path.join(__dirname, 'out'); 
+app.use('/out', express.static(docsPath));
 
 // Principal route
 app.use("/", indexRouter);

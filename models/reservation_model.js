@@ -1,6 +1,27 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+/**
+ * Reservation model for MongoDB using Mongoose.
+ * 
+ * @module ReservationModel
+ * 
+ */
+
+/**
+ * Reservation schema representing a reservation for a catway in the marina.
+ * 
+ * This schema includes information such as the catway number, client name, 
+ * boat name, and reservation dates.
+ * 
+ * @typedef {Object} Reservation
+ * @property {string} catwayId - ID of the catway.
+ * @property {string} clientName - Name of the client.
+ * @property {string} boatName - Name of the boat.
+ * @property {Date} checking - Checking date for the reservation.
+ * @property {Date} checkOut - Check-out date for the reservation.
+ * 
+ */
 const ReservationSchema = new Schema(
   {
     catwayId: {
