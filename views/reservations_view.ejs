@@ -11,6 +11,7 @@
       Reservations for Catway <%= reservations.length > 0 ?
       reservations[0].catwayNumber : '' %>
     </h1>
+    <a href="/dashboard">Back to Dashboard</a>
     <% reservations.forEach(reservation => { %>
     <ul>
       <li>
@@ -34,6 +35,5 @@
       </li>
     </ul>
     <% }); %>
-    <a href="/dashboard">Back to Dashboard</a>
   </body>
 </html>

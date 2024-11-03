@@ -1,6 +1,7 @@
 <div>
+  <h3>Make a Reservation</h3>
     <form id="createReservationForm">
-      <label for="catwayId">Select a Catway Number for creating a reservation:</label>
+      <label for="catwayId">Select a Catway to make a reservation:</label>
       <select id="catwayId" name="catwayId" required>
         <option value="" disabled selected>Select a Catway</option>
       </select>
@@ -24,7 +25,7 @@
   
       <button type="submit">Save Reservation</button>
     </form>
-  </div>
+</div>
   
   <script>
     async function populateCatwaysSelect() {

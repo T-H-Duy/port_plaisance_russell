@@ -8,7 +8,7 @@
 
   <body>
     <h1>Reservation Details</h1>
-
+    <a href="/reservations/view">Back to Reservations List</a>
     <h2>Reservation ID: <%= reservation._id %></h2>
     <ul>
       <li><strong>Client Name:</strong> <%= reservation.clientName %></li>
@@ -22,7 +22,5 @@
       </li>
       <li><strong>Boat Name:</strong> <%= reservation.boatName %></li>
     </ul>
-
-    <a href="/reservations/view">Back to Reservations List</a>
   </body>
 </html>

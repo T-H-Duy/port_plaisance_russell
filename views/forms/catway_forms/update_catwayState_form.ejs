@@ -1,5 +1,5 @@
 <div>
-    <h2>Update Catway State</h2>
+    <h3>Update Catway State</h3>
     <form id="updateCatwayForm">
       <label for="updateCatwayId">Select Catway Number:</label>
       <select id="updateCatwayId" name="updateCatwayId" required>
@@ -7,16 +7,15 @@
       </select>
       <br /><br />
   
-      <label for="updateCatwayState">New Catway State:</label>
-      <input
-        type="text"
-        id="updateCatwayState"
-        name="updateCatwayState"
-        required
-      />
+      <label for="updateCatwayState">Updated State:</label>
+      <select id="updateCatwayState" name="updateCatwayState" required>
+        <option value="" disabled selected>Select State</option>
+        <option value="true">Available</option>
+        <option value="false">Occupied</option>
+      </select>
       <br /><br />
   
-      <button type="submit">Update Catway State</button>
+      <button type="submit">Update a Catway State</button>
     </form>
   </div>
   

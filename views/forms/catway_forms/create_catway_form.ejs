@@ -1,12 +1,16 @@
 <div>
-    <h2>Add a New Catway</h2>
+    <h3>Add a Catway</h3>
     <form id="addCatwayForm">
       <label for="addCatwayNumber">Catway Number:</label>
       <input type="text" id="addCatwayNumber" name="addCatwayNumber" required />
       <br /><br />
   
       <label for="addCatwayState">Catway State:</label>
-      <input type="text" id="addCatwayState" name="addCatwayState" required />
+      <select id="addCatwayState" name="addCatwayState" required>
+        <option value="" disabled selected>Select State</option>
+        <option value="true">Available</option>
+        <option value="false">Occupied</option>
+      </select>
       <br /><br />
   
       <label for="addType">Type:</label>
